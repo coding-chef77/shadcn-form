@@ -14,8 +14,12 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { z } from "zod";
+import { useFormStatus } from "react-dom";
+import { useState } from "react";
 
 const RegisterRorm = () => {
+  const [loading, setLoading] = useState(false);
   const form = useForm({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
@@ -26,9 +30,12 @@ const RegisterRorm = () => {
     },
   });
 
-  const onSubmit = () => {
-    console.log("Submitted");
+  const onSubmit = (data: z.infer<typeof RegisterSchema>) => {
+    setLoading(true);
+    console.log(data);
   };
+
+  const { pending } = useFormStatus();
   return (
     <CardWrapper
       label="Create an account"
@@ -96,8 +103,8 @@ const RegisterRorm = () => {
               )}
             />
           </div>
-          <Button type="submit" className="w-full">
-            Register
+          <Button type="submit" className="w-full" disabled={pending}>
+            {loading ? "Registering..." : "Register"}
           </Button>
         </form>
       </Form>
